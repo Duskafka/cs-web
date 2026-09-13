@@ -1,0 +1,259 @@
+@import 'tailwindcss';
+
+/*
+ * 다크 네온 테마.
+ * 카테고리 색은 brainLobeMap.ts 가 단일 출처이므로 여기서는 표면/텍스트 색만 정의한다.
+ */
+@theme {
+  --color-ink-950: #020617;
+  --color-ink-900: #0b1220;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+  /* 앱이 뷰포트에 고정된 듀얼 뷰라 문서 자체는 스크롤되지 않는다.
+     캔버스를 드래그할 때 페이지가 딸려 움직이는 것도 함께 막힌다. */
+  overflow: hidden;
+}
+
+body {
+  background-color: #020617;
+}
+
+/* 캔버스 배경은 색을 입히지 않고 페이지 바탕색을 그대로 쓴다.
+   방사형 광원을 깔면 노드·연결선과 섞여 화면이 탁해진다. */
+.brain-canvas {
+  background-color: #020617;
+}
+
+/* 캔버스를 드래그해 회전할 때 텍스트가 선택되는 것을 막는다. */
+.brain-canvas canvas {
+  touch-action: none;
+}
+
+/* ── 노트 본문 렌더링 ─────────────────────────────────────────── */
+/* 빌드 타임에 만들어진 HTML 에 클래스가 없으므로 요소 선택자로 스타일을 준다. */
+
+.note-content {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: #cbd5e1;
+}
+
+.note-content > *:first-child {
+  margin-top: 0;
+}
+
+.note-content h1 {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.note-content h2 {
+  margin: 1.75rem 0 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.note-content h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.note-content p {
+  margin: 0.75rem 0;
+}
+
+.note-content ul,
+.note-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+}
+
+.note-content ul {
+  list-style: disc;
+}
+
+.note-content ol {
+  list-style: decimal;
+}
+
+.note-content li {
+  margin: 0.3rem 0;
+}
+
+.note-content li::marker {
+  color: #475569;
+}
+
+.note-content strong {
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.note-content hr {
+  margin: 1.5rem 0;
+  border-color: rgb(255 255 255 / 0.08);
+}
+
+.note-content blockquote {
+  margin: 1rem 0;
+  border-left: 2px solid rgb(34 211 238 / 0.4);
+  padding-left: 0.85rem;
+  color: #94a3b8;
+}
+
+/* 표는 좁은 사이드바에서 넘칠 수 있으므로 가로 스크롤 컨테이너를 만든다. */
+.note-content table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.note-content th,
+.note-content td {
+  border: 1px solid rgb(255 255 255 / 0.08);
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.note-content th {
+  background: rgb(255 255 255 / 0.04);
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.note-content code {
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 0.08);
+  padding: 0.1rem 0.3rem;
+  font-size: 0.8125rem;
+  color: #a5f3fc;
+}
+
+.note-content pre {
+  margin: 1rem 0;
+  overflow-x: auto;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 0.5rem;
+  background: #0b1220;
+  padding: 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.note-content pre code {
+  background: transparent;
+  padding: 0;
+  color: #e2e8f0;
+}
+
+/* 위키링크: 그래프 이동 트리거임을 색과 점선 밑줄로 드러낸다. */
+.note-content a.wikilink {
+  border-bottom: 1px dashed rgb(34 211 238 / 0.5);
+  color: #67e8f9;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.note-content a.wikilink:hover {
+  border-bottom-color: #22d3ee;
+  color: #a5f3fc;
+}
+
+/* 고스트 링크: 대상 노트가 아직 없다. */
+.note-content a.wikilink-ghost {
+  border-bottom-style: dotted;
+  border-bottom-color: rgb(251 191 36 / 0.5);
+  color: #fcd34d;
+}
+
+.note-content a.wikilink-ghost:hover {
+  border-bottom-color: #fbbf24;
+  color: #fde68a;
+}
+
+/* ── 코드 하이라이팅 (rehype-highlight / highlight.js 클래스) ───── */
+.hljs-comment,
+.hljs-quote {
+  color: #64748b;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+  color: #c4b5fd;
+}
+
+.hljs-string,
+.hljs-doctag,
+.hljs-regexp {
+  color: #86efac;
+}
+
+.hljs-number,
+.hljs-built_in {
+  color: #fbbf24;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-title.function_ {
+  color: #7dd3fc;
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-params {
+  color: #f0abfc;
+}
+
+/* ── 스크롤바 ─────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.15) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.15);
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* type="search" 의 브라우저 기본 지우기 버튼을 숨긴다.
+   SearchBar 가 직접 그린 버튼과 겹쳐 X 가 두 개로 보이기 때문이다. */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
