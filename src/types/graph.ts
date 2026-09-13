@@ -31,15 +31,11 @@ export interface Vec3 {
   z: number;
 }
 
-/** 카테고리 → 뇌엽 매핑 정의. */
+/** 카테고리 → 3D 배치 정의. */
 export interface LobeDefinition {
   id: CategoryId;
-  /** 뇌엽 한글 이름 (예: 전두엽). */
-  lobe: string;
   /** 사이드바에 표시할 카테고리 한글 이름. */
   label: string;
-  /** 이 뇌엽이 담당하는 인지 기능 설명. */
-  role: string;
   /** 노드들이 끌려가는 목표 중심점. */
   centroid: Vec3;
   /** 네온 색상 (hex). */

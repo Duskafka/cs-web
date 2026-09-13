@@ -71,7 +71,7 @@ export default function NoteReader({
             style={{ backgroundColor: lobe.color, boxShadow: `0 0 10px ${lobe.color}` }}
           />
           <span className="text-[11px] tracking-wide text-slate-400">
-            {lobe.lobe} · {lobe.label}
+            {lobe.label}
           </span>
         </div>
 

@@ -11,7 +11,7 @@ export interface CategoryFilterProps {
 }
 
 /**
- * 카테고리(= 뇌엽) 필터.
+ * 카테고리 필터.
  *
  * 끈 카테고리의 노드는 그래프에서 제거하지 않고 흐려지기만 한다. 노드를 빼면
  * 힘 시뮬레이션이 다시 요동쳐 사용자가 보던 뇌 형태가 무너지기 때문이다.
@@ -28,7 +28,7 @@ export default function CategoryFilter({
     <section>
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
-          뇌엽 필터
+          카테고리
         </h2>
         {!allOn && (
           <button
@@ -62,11 +62,8 @@ export default function CategoryFilter({
                     boxShadow: active ? `0 0 8px ${lobe.color}` : 'none',
                   }}
                 />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[13px] text-slate-200">{lobe.label}</span>
-                  <span className="block truncate text-[10px] text-slate-500">
-                    {lobe.lobe} · {lobe.role}
-                  </span>
+                <span className="min-w-0 flex-1 truncate text-[13px] text-slate-200">
+                  {lobe.label}
                 </span>
                 <span className="shrink-0 text-[11px] tabular-nums text-slate-500">
                   {countByCategory[id] ?? 0}

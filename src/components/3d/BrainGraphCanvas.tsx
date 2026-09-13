@@ -347,7 +347,12 @@ export default function BrainGraphCanvas({
           onBackgroundClick={() => commitSelection(null)}
         />
       )}
-      <ReadyProbe graphRef={graphRef} ready={width > 0 && height > 0} onReady={handleReady} />
+      <ReadyProbe
+        graphRef={graphRef}
+        nodes={data.nodes}
+        ready={width > 0 && height > 0}
+        onReady={handleReady}
+      />
     </div>
   );
 }
@@ -361,10 +366,12 @@ export default function BrainGraphCanvas({
  */
 function ReadyProbe({
   graphRef,
+  nodes,
   ready,
   onReady,
 }: {
   graphRef: React.RefObject<FGMethods | undefined>;
+  nodes: GraphNode[];
   ready: boolean;
   onReady: () => void;
 }) {
@@ -377,22 +384,20 @@ function ReadyProbe({
       if (!fg) return;
 
       // ref 가 채워졌다고 해서 힘 시뮬레이션까지 만들어진 것은 아니다.
-      // 레이아웃이 생기기 전에 힘을 등록하거나 reheat 하면 첫 애니메이션 프레임이
-      // 아직 없는 시뮬레이션을 tick 하려다 터진다. 기본 힘 조회로 준비 여부를 본다.
-      let layoutReady = false;
-      try {
-        layoutReady = Boolean(fg.d3Force('charge'));
-      } catch {
-        layoutReady = false;
-      }
-      if (!layoutReady) return;
+      // three-forcegraph 는 내부 갱신 주기(debounce 1ms)가 한 번 돌아야 레이아웃을
+      // 만든다. 그 전에 d3ReheatSimulation() 을 부르면 엔진만 "실행 중"으로 바뀌어,
+      // 다음 애니메이션 프레임이 아직 없는 레이아웃을 tick 하려다 터진다.
+      //
+      // 기본 힘(charge)은 레이아웃과 무관하게 생성 시점부터 존재하므로 준비 신호로
+      // 쓸 수 없다. 레이아웃이 만들어질 때 d3 가 노드에 초기 좌표를 심는 것을 본다.
+      if (nodes.length > 0 && typeof nodes[0].x !== 'number') return;
 
       doneRef.current = true;
       clearInterval(timer);
       onReady();
     }, 50);
     return () => clearInterval(timer);
-  }, [ready, graphRef, onReady]);
+  }, [ready, graphRef, nodes, onReady]);
 
   return null;
 }

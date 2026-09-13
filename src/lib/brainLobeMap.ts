@@ -17,49 +17,37 @@ export const BRAIN_CENTER: Vec3 = { x: 0, y: 20, z: 0 };
 export const LOBES: Record<CategoryId, LobeDefinition> = {
   'ds-algo': {
     id: 'ds-algo',
-    lobe: '전두엽',
     label: '자료구조·알고리즘',
-    role: '논리와 문제 해결',
     centroid: { x: 0, y: 55, z: 120 },
     color: '#22d3ee', // cyan
   },
   architecture: {
     id: 'architecture',
-    lobe: '두정엽',
     label: '아키텍처',
-    role: '정보 통합과 설계',
     centroid: { x: 0, y: 85, z: -10 },
     color: '#3b82f6', // blue
   },
   database: {
     id: 'database',
-    lobe: '좌측두엽',
-    role: '기억과 저장',
     label: '데이터베이스',
     centroid: { x: -105, y: -25, z: 10 },
     color: '#e879f9', // magenta
   },
   network: {
     id: 'network',
-    lobe: '우측두엽',
     label: '네트워크',
-    role: '신호 전달',
     centroid: { x: 105, y: -25, z: 10 },
     color: '#4ade80', // green
   },
   frontend: {
     id: 'frontend',
-    lobe: '후두엽',
     label: '프론트엔드',
-    role: '시각 처리',
     centroid: { x: 0, y: 40, z: -140 },
     color: '#a78bfa', // violet
   },
   os: {
     id: 'os',
-    lobe: '뇌간·소뇌',
     label: '운영체제',
-    role: '저수준 제어',
     centroid: { x: 0, y: -80, z: -70 },
     color: '#fbbf24', // amber
   },

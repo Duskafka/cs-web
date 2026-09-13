@@ -35,7 +35,7 @@ export default function NodeTooltip({ node, note, backlinkCount }: NodeTooltipPr
       </div>
 
       <div className="mt-1 text-[11px] tracking-wide text-slate-400">
-        {lobe.lobe} · {lobe.label}
+        {lobe.label}
       </div>
 
       {node.isGhost ? (
