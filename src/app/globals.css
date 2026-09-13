@@ -37,6 +37,13 @@ body {
   touch-action: none;
 }
 
+/* 검색창은 직접 그린 지우기 버튼을 쓰므로 브라우저 기본 취소 버튼은 숨긴다.
+   두 개가 나란히 놓여 겹쳐 보인다. */
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* ── 노트 전체 화면 레이아웃 ──────────────────────────────────── */
 /* 스크롤은 창 전체 폭에서 일어나야 스크롤바가 화면 오른쪽 끝에 붙는다.
    그래서 읽기 폭 제한은 스크롤 컨테이너가 아니라 그 안쪽 열에만 건다. */
