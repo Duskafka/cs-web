@@ -134,6 +134,26 @@ export default function BrainGraph2DCanvas({
     [matchedIds, neighborIds, selectedId],
   );
 
+  /**
+   * 클릭·호버 판정에 쓰이는 영역.
+   *
+   * 점을 작게 그리므로 그린 모양 그대로를 판정에 쓰면 맞히기 어렵다.
+   * 보이지 않는 넉넉한 원을 따로 깔아, 손이 조금 빗나가도 집히게 한다.
+   * 확대율로 나눠 화면상 크기가 배율과 무관하게 일정하도록 맞춘다.
+   */
+  const nodePointerAreaPaint = useCallback(
+    (node: FGNode, color: string, ctx: CanvasRenderingContext2D, globalScale: number) => {
+      if (node.x === undefined || node.y === undefined) return;
+      const drawn = 1.2 + Math.sqrt(node.val) * 0.7;
+      const radius = Math.max(drawn, 9 / globalScale);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    },
+    [],
+  );
+
   const linkColor = useCallback(
     (link: FGLink) => {
       const a = endpointId(link.source as string | GraphNode);
@@ -161,6 +181,7 @@ export default function BrainGraph2DCanvas({
           graphData={data}
           backgroundColor="rgba(0,0,0,0)"
           nodeCanvasObject={nodeCanvasObject}
+          nodePointerAreaPaint={nodePointerAreaPaint}
           nodeLabel={() => ''}
           linkColor={linkColor}
           linkWidth={0.6}

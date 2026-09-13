@@ -5,7 +5,7 @@ import type { GraphStats } from '@/types/graph';
 
 export interface StatsHeaderProps {
   stats: GraphStats;
-  /** 모바일에서는 2D 모드로 동작 중임을 알린다. */
+  /** 그래프가 2D 로 그려지는 중임을 알린다. */
   reducedMode: boolean;
 }
 

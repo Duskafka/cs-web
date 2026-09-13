@@ -39,9 +39,9 @@ export const LOBES: Record<CategoryId, LobeDefinition> = {
     centroid: { x: 105, y: -25, z: 10 },
     color: '#4ade80', // green
   },
-  frontend: {
-    id: 'frontend',
-    label: '프론트엔드',
+  backend: {
+    id: 'backend',
+    label: '백엔드',
     centroid: { x: 0, y: 40, z: -140 },
     color: '#a78bfa', // violet
   },
@@ -59,7 +59,7 @@ export const CATEGORY_ORDER: CategoryId[] = [
   'os',
   'network',
   'database',
-  'frontend',
+  'backend',
   'architecture',
 ];
 

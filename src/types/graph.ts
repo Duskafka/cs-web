@@ -21,7 +21,7 @@ export type CategoryId =
   | 'os'
   | 'network'
   | 'database'
-  | 'frontend'
+  | 'backend'
   | 'architecture';
 
 /** 3D 공간의 좌표. */

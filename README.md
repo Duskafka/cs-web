@@ -41,7 +41,7 @@ aliases: [deadlock, 교착 상태]
 [[프로세스|다른 이름으로]] 표기하거나 [[프로세스#상태 전이]] 처럼 헤딩을 붙여도 됩니다.
 ```
 
-- `category` 는 `ds-algo`, `os`, `network`, `database`, `frontend`, `architecture`
+- `category` 는 `ds-algo`, `os`, `network`, `database`, `backend`, `architecture`
   중 하나입니다. 비워두면 디렉터리 이름으로 추론합니다. 카테고리와 뇌엽의 대응은
   `src/lib/brainLobeMap.ts` 에 정의돼 있습니다.
 - 위키링크 대상은 제목 → 별칭 → 파일명 순으로 해석합니다. 대소문자와 공백/하이픈

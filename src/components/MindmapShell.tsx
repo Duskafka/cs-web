@@ -6,14 +6,16 @@ import { PanelRightOpen } from 'lucide-react';
 
 import NodeTooltip from '@/components/3d/NodeTooltip';
 import CategoryFilter from '@/components/ui/CategoryFilter';
-import MobileDrawer from '@/components/ui/MobileDrawer';
+import NoteFullView from '@/components/ui/NoteFullView';
 import NoteReader from '@/components/ui/NoteReader';
 import SearchBar from '@/components/ui/SearchBar';
+import SettingsPanel from '@/components/ui/SettingsPanel';
 import Sidebar from '@/components/ui/Sidebar';
 import StatsHeader from '@/components/ui/StatsHeader';
 import { useMediaQuery, useMounted } from '@/hooks/useMediaQuery';
 import { ghostId } from '@/lib/wikilink';
 import { computeMatchedIds, useGraphStore } from '@/store/graphStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import type { KnowledgePayload } from '@/types/graph';
 
 // WebGL 캔버스는 브라우저 전용이라 두 캔버스 모두 SSR 을 끈다.
@@ -30,8 +32,17 @@ export interface MindmapShellProps {
 
 export default function MindmapShell({ payload }: MindmapShellProps) {
   const mounted = useMounted();
-  // 768px 미만이면 WebGL 대신 2D 캔버스를 쓴다 (모바일 GPU 부담 회피).
+  // 좁은 화면은 레이아웃만 바꾼다. 2D/3D 선택은 아래 설정이 따로 정한다.
   const isMobile = useMediaQuery('(max-width: 767px)');
+
+  // 저장된 설정을 읽어온다. 첫 방문이면 좁은 화면에서 2D 로 시작한다.
+  const settingsHydrated = useSettingsStore((state) => state.hydrated);
+  const renderMode = useSettingsStore((state) => state.renderMode);
+  const contentWidth = useSettingsStore((state) => state.contentWidth);
+  const hydrateSettings = useSettingsStore((state) => state.hydrate);
+  useEffect(() => {
+    hydrateSettings();
+  }, [hydrateSettings]);
 
   const init = useGraphStore((state) => state.init);
   const noteBySlug = useGraphStore((state) => state.noteBySlug);
@@ -60,6 +71,9 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
   }, [init, payload]);
 
   const graph = storePayload?.graph ?? payload.graph;
+
+  // 설정을 읽기 전에 캔버스를 띄우면 3D 컨텍스트를 만들었다가 곧바로 버리게 된다.
+  const canRender = mounted && settingsHydrated;
 
   const nodeById = useMemo(
     () => new Map(graph.nodes.map((node) => [node.id, node])),
@@ -110,6 +124,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
         onToggle={toggleCategory}
         onReset={resetCategories}
       />
+      <SettingsPanel />
     </div>
   );
 
@@ -127,13 +142,13 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
 
   return (
     <div className="flex h-dvh flex-col bg-slate-950">
-      <StatsHeader stats={payload.stats} reducedMode={mounted && isMobile} />
+      <StatsHeader stats={payload.stats} reducedMode={canRender && renderMode === '2d'} />
 
       <div className="relative flex min-h-0 flex-1">
         {/* 좌측/중앙: 그래프 캔버스 */}
         <main className="brain-canvas relative min-w-0 flex-1">
-          {mounted &&
-            (isMobile ? (
+          {canRender &&
+            (renderMode === '2d' ? (
               <BrainGraph2DCanvas
                 graph={graph}
                 selectedId={selectedId}
@@ -155,7 +170,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
               />
             ))}
 
-          {!isMobile && (
+          {renderMode === '3d' && (
             <NodeTooltip
               node={hoveredNode}
               note={hoveredNode?.slug ? noteBySlug.get(hoveredNode.slug) : undefined}
@@ -177,24 +192,26 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
 
         {/* 우측: 데스크톱 사이드바 */}
         {!isMobile && (
-          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} controls={controls}>
-            {reader}
-          </Sidebar>
+          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} controls={controls} />
         )}
       </div>
 
-      {/* 모바일: 검색바는 하단 고정, 노트는 드로어 */}
+      {/* 모바일: 검색과 필터는 하단에 고정한다. */}
       {mounted && isMobile && (
-        <>
-          {/* 좁은 화면에서는 필터 목록이 그래프를 밀어내므로 높이를 제한하고 스크롤시킨다. */}
-          <div className="max-h-[38vh] shrink-0 overflow-y-auto border-t border-white/10 bg-slate-950/90 px-3 py-2.5 backdrop-blur">
-            {controls}
-          </div>
-          <MobileDrawer open={Boolean(selectedNode)} onClose={() => selectNode(null)}>
-            {reader}
-          </MobileDrawer>
-        </>
+        /* 좁은 화면에서는 필터 목록이 그래프를 밀어내므로 높이를 제한하고 스크롤시킨다. */
+        <div className="max-h-[38vh] shrink-0 overflow-y-auto border-t border-white/10 bg-slate-950/90 px-3 py-2.5 backdrop-blur">
+          {controls}
+        </div>
       )}
+
+      {/* 노트는 라우트를 늘리지 않고 같은 페이지 위에 전체 화면으로 편다. */}
+      <NoteFullView
+        open={Boolean(selectedNode)}
+        contentWidth={contentWidth}
+        onClose={() => selectNode(null)}
+      >
+        {reader}
+      </NoteFullView>
     </div>
   );
 }

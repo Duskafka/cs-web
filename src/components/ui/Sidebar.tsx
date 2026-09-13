@@ -5,19 +5,18 @@ import { PanelRightClose } from 'lucide-react';
 export interface SidebarProps {
   open: boolean;
   onClose: () => void;
-  /** 검색 + 필터 등 상단 고정 영역. */
+  /** 검색 + 필터 영역. */
   controls: React.ReactNode;
-  /** 노트 리더 등 스크롤되는 본문 영역. */
-  children: React.ReactNode;
 }
 
 /**
- * 데스크톱용 우측 접이식 패널.
+ * 데스크톱용 우측 접이식 패널. 검색과 카테고리 필터만 담는다.
+ * 노트 본문은 중앙 모달(NoteModal)이 맡는다.
  *
  * 3D 캔버스와 상태를 공유하지 않도록 UI 만 담당한다 (CLAUDE.md 컴포넌트 분리 규칙).
  * 접었다 펴는 동안 캔버스 폭이 바뀌면 ResizeObserver 가 크기를 다시 잡아준다.
  */
-export default function Sidebar({ open, onClose, controls, children }: SidebarProps) {
+export default function Sidebar({ open, onClose, controls }: SidebarProps) {
   return (
     <aside
       aria-hidden={!open}
@@ -38,8 +37,6 @@ export default function Sidebar({ open, onClose, controls, children }: SidebarPr
           </button>
         </div>
       </div>
-
-      <div className="min-h-0 w-[22rem] flex-1 xl:w-[26rem]">{children}</div>
     </aside>
   );
 }

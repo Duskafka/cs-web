@@ -71,7 +71,7 @@ Standard 3D force-directed graphs form random spherical shapes. To enforce a **B
 1. **Lobe Coordinates Mapping**:
     - **Frontal Lobe (Logic/Algorithms)**: Positive $Z$, upper $Y$ coordinates.
     - **Temporal Lobe (Memory/Database)**: Side lower $X$, $Y$ coordinates.
-    - **Occipital Lobe (Visual/Graphics/Frontend)**: Negative $Z$, upper $Y$ coordinates.
+    - **Occipital Lobe (Backend/Server-side)**: Negative $Z$, upper $Y$ coordinates.
     - **Parietal Lobe (Systems/Architecture)**: Top-center $Y$, neutral $Z$.
     - **Brainstem/Cerebellum (OS/Low-level/Hardware)**: Lower $Y$, negative $Z$ base coordinates.
 2. **Custom Force Assignment**:
