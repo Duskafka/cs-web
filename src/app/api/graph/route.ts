@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { buildKnowledgePayload } from '@/lib/graphUtils';
+import { getLinks } from '@/lib/links';
 import { getAllNotes } from '@/lib/markdown';
 
 /**
@@ -13,9 +14,9 @@ export const dynamic = 'force-static';
 
 export async function GET() {
   const notes = await getAllNotes();
-  const { graph, stats, backlinks } = buildKnowledgePayload(notes);
+  const { graph, stats, backlinks, outlinks } = buildKnowledgePayload(notes, getLinks(notes));
 
   // 본문 HTML 은 응답에서 뺀다. 그래프 구조만으로도 크기가 충분히 크고,
   // 본문은 어차피 페이지 페이로드로 전달되기 때문이다.
-  return NextResponse.json({ graph, stats, backlinks });
+  return NextResponse.json({ graph, stats, backlinks, outlinks });
 }

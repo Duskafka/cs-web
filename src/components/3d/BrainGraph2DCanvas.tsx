@@ -117,14 +117,8 @@ export default function BrainGraph2DCanvas({
 
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-      if (node.isGhost) {
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = color;
-        ctx.fill();
-      }
+      ctx.fillStyle = color;
+      ctx.fill();
 
       // 작은 화면에서 글자가 엉키지 않도록, 확대했거나 선택했거나
       // 연결이 많아 지도의 이정표 역할을 하는 노드에만 라벨을 붙인다.

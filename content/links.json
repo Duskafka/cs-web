@@ -1,0 +1,756 @@
+{
+  "exclude": [],
+  "extra": [],
+  "links": [
+    {
+      "source": "architecture/caching-strategy",
+      "target": "backend/authentication",
+      "keyword": "인증과 인가",
+      "count": 1
+    },
+    {
+      "source": "architecture/caching-strategy",
+      "target": "database/normalization",
+      "keyword": "정규화",
+      "count": 1
+    },
+    {
+      "source": "architecture/caching-strategy",
+      "target": "ds-algo/dynamic-programming",
+      "keyword": "동적 계획법",
+      "count": 1
+    },
+    {
+      "source": "architecture/caching-strategy",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "architecture/caching-strategy",
+      "target": "os/virtual-memory",
+      "keyword": "가상 메모리",
+      "count": 1
+    },
+    {
+      "source": "architecture/cap-theorem",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "architecture/cap-theorem",
+      "target": "architecture/msa",
+      "keyword": "마이크로서비스 아키텍처",
+      "count": 1
+    },
+    {
+      "source": "architecture/cap-theorem",
+      "target": "database/sharding",
+      "keyword": "샤딩",
+      "count": 1
+    },
+    {
+      "source": "architecture/cap-theorem",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "architecture/cap-theorem",
+      "target": "network/dns",
+      "keyword": "DNS",
+      "count": 1
+    },
+    {
+      "source": "architecture/message-queue",
+      "target": "architecture/msa",
+      "keyword": "마이크로서비스 아키텍처",
+      "count": 1
+    },
+    {
+      "source": "architecture/message-queue",
+      "target": "database/sharding",
+      "keyword": "샤딩",
+      "count": 1
+    },
+    {
+      "source": "architecture/message-queue",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "architecture/msa",
+      "target": "architecture/cap-theorem",
+      "keyword": "CAP 정리",
+      "count": 1
+    },
+    {
+      "source": "architecture/msa",
+      "target": "architecture/message-queue",
+      "keyword": "메시지 큐",
+      "count": 1
+    },
+    {
+      "source": "architecture/msa",
+      "target": "database/sharding",
+      "keyword": "샤딩",
+      "count": 1
+    },
+    {
+      "source": "architecture/msa",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 2
+    },
+    {
+      "source": "architecture/msa",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "backend/authentication",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "backend/authentication",
+      "target": "backend/rest-api",
+      "keyword": "REST API 설계",
+      "count": 1
+    },
+    {
+      "source": "backend/authentication",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "backend/authentication",
+      "target": "network/https-tls",
+      "keyword": "HTTPS와 TLS",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "backend/authentication",
+      "keyword": "인증",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "backend/orm-n-plus-one",
+      "keyword": "ORM과 N+1 문제",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 2
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "network/tcp-ip",
+      "keyword": "tcp",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "os/context-switching",
+      "keyword": "컨텍스트 스위칭",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "backend/connection-pool",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 2
+    },
+    {
+      "source": "backend/orm-n-plus-one",
+      "target": "backend/connection-pool",
+      "keyword": "커넥션 풀",
+      "count": 1
+    },
+    {
+      "source": "backend/orm-n-plus-one",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "backend/orm-n-plus-one",
+      "target": "database/normalization",
+      "keyword": "정규화",
+      "count": 2
+    },
+    {
+      "source": "backend/orm-n-plus-one",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "backend/rest-api",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "backend/rest-api",
+      "target": "backend/authentication",
+      "keyword": "인증",
+      "count": 2
+    },
+    {
+      "source": "backend/rest-api",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "backend/rest-api",
+      "target": "network/http",
+      "keyword": "HTTP",
+      "count": 1
+    },
+    {
+      "source": "backend/rest-api",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "database/index",
+      "target": "ds-algo/binary-tree",
+      "keyword": "이진 트리",
+      "count": 1
+    },
+    {
+      "source": "database/index",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "database/index",
+      "target": "ds-algo/sorting",
+      "keyword": "정렬 알고리즘",
+      "count": 1
+    },
+    {
+      "source": "database/index",
+      "target": "os/virtual-memory",
+      "keyword": "가상 메모리",
+      "count": 1
+    },
+    {
+      "source": "database/isolation-level",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "database/isolation-level",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "database/isolation-level",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 1
+    },
+    {
+      "source": "database/normalization",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "database/normalization",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "database/normalization",
+      "target": "database/sharding",
+      "keyword": "샤딩",
+      "count": 1
+    },
+    {
+      "source": "database/sharding",
+      "target": "architecture/cap-theorem",
+      "keyword": "CAP 정리",
+      "count": 1
+    },
+    {
+      "source": "database/sharding",
+      "target": "architecture/msa",
+      "keyword": "마이크로서비스 아키텍처",
+      "count": 1
+    },
+    {
+      "source": "database/sharding",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "database/sharding",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "database/sharding",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "database/transaction",
+      "target": "architecture/cap-theorem",
+      "keyword": "CAP 정리",
+      "count": 1
+    },
+    {
+      "source": "database/transaction",
+      "target": "architecture/msa",
+      "keyword": "마이크로서비스 아키텍처",
+      "count": 1
+    },
+    {
+      "source": "database/transaction",
+      "target": "database/isolation-level",
+      "keyword": "격리 수준",
+      "count": 1
+    },
+    {
+      "source": "database/transaction",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/binary-tree",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 2
+    },
+    {
+      "source": "ds-algo/binary-tree",
+      "target": "ds-algo/graph-traversal",
+      "keyword": "그래프 탐색",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/binary-tree",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/dynamic-programming",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/dynamic-programming",
+      "target": "ds-algo/graph-traversal",
+      "keyword": "그래프 탐색",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/dynamic-programming",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/graph-traversal",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/graph-traversal",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/hash-table",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/hash-table",
+      "target": "backend/authentication",
+      "keyword": "인증과 인가",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/hash-table",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/hash-table",
+      "target": "ds-algo/binary-tree",
+      "keyword": "이진 트리",
+      "count": 2
+    },
+    {
+      "source": "ds-algo/hash-table",
+      "target": "ds-algo/dynamic-programming",
+      "keyword": "동적 계획법",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/sorting",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/sorting",
+      "target": "database/sharding",
+      "keyword": "샤딩",
+      "count": 1
+    },
+    {
+      "source": "ds-algo/sorting",
+      "target": "ds-algo/binary-tree",
+      "keyword": "이진 트리",
+      "count": 1
+    },
+    {
+      "source": "network/dns",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "network/dns",
+      "target": "architecture/cap-theorem",
+      "keyword": "CAP 정리",
+      "count": 1
+    },
+    {
+      "source": "network/dns",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "network/dns",
+      "target": "network/tcp-ip",
+      "keyword": "TCP/IP",
+      "count": 1
+    },
+    {
+      "source": "network/http",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "network/http",
+      "target": "backend/rest-api",
+      "keyword": "REST API 설계",
+      "count": 1
+    },
+    {
+      "source": "network/http",
+      "target": "network/https-tls",
+      "keyword": "HTTPS와 TLS",
+      "count": 1
+    },
+    {
+      "source": "network/http",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "network/http",
+      "target": "network/tcp-ip",
+      "keyword": "tcp",
+      "count": 2
+    },
+    {
+      "source": "network/https-tls",
+      "target": "backend/authentication",
+      "keyword": "인증",
+      "count": 3
+    },
+    {
+      "source": "network/https-tls",
+      "target": "network/http",
+      "keyword": "HTTP",
+      "count": 1
+    },
+    {
+      "source": "network/https-tls",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "network/https-tls",
+      "target": "network/tcp-ip",
+      "keyword": "TCP/IP",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "architecture/msa",
+      "keyword": "마이크로서비스 아키텍처",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "backend/authentication",
+      "keyword": "세션",
+      "count": 2
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "ds-algo/hash-table",
+      "keyword": "해시 테이블",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "network/http",
+      "keyword": "HTTP",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "network/https-tls",
+      "keyword": "HTTPS와 TLS",
+      "count": 1
+    },
+    {
+      "source": "network/load-balancing",
+      "target": "os/scheduling",
+      "keyword": "CPU 스케줄링",
+      "count": 1
+    },
+    {
+      "source": "network/tcp-ip",
+      "target": "network/dns",
+      "keyword": "DNS",
+      "count": 2
+    },
+    {
+      "source": "network/tcp-ip",
+      "target": "network/http",
+      "keyword": "HTTP",
+      "count": 2
+    },
+    {
+      "source": "network/tcp-ip",
+      "target": "network/https-tls",
+      "keyword": "HTTPS와 TLS",
+      "count": 1
+    },
+    {
+      "source": "os/context-switching",
+      "target": "backend/connection-pool",
+      "keyword": "커넥션 풀",
+      "count": 1
+    },
+    {
+      "source": "os/context-switching",
+      "target": "os/process",
+      "keyword": "프로세스",
+      "count": 9
+    },
+    {
+      "source": "os/context-switching",
+      "target": "os/scheduling",
+      "keyword": "스케줄러",
+      "count": 3
+    },
+    {
+      "source": "os/context-switching",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 3
+    },
+    {
+      "source": "os/deadlock",
+      "target": "database/isolation-level",
+      "keyword": "격리 수준",
+      "count": 1
+    },
+    {
+      "source": "os/deadlock",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "os/deadlock",
+      "target": "ds-algo/graph-traversal",
+      "keyword": "그래프 탐색",
+      "count": 1
+    },
+    {
+      "source": "os/deadlock",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 1
+    },
+    {
+      "source": "os/process",
+      "target": "backend/connection-pool",
+      "keyword": "커넥션 풀",
+      "count": 1
+    },
+    {
+      "source": "os/process",
+      "target": "os/context-switching",
+      "keyword": "컨텍스트 스위칭",
+      "count": 1
+    },
+    {
+      "source": "os/process",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "os/process",
+      "target": "os/scheduling",
+      "keyword": "CPU 스케줄링",
+      "count": 1
+    },
+    {
+      "source": "os/process",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 2
+    },
+    {
+      "source": "os/process",
+      "target": "os/virtual-memory",
+      "keyword": "가상 메모리",
+      "count": 1
+    },
+    {
+      "source": "os/scheduling",
+      "target": "network/load-balancing",
+      "keyword": "로드 밸런싱",
+      "count": 1
+    },
+    {
+      "source": "os/scheduling",
+      "target": "os/context-switching",
+      "keyword": "컨텍스트 스위칭",
+      "count": 3
+    },
+    {
+      "source": "os/scheduling",
+      "target": "os/process",
+      "keyword": "프로세스",
+      "count": 15
+    },
+    {
+      "source": "os/scheduling",
+      "target": "os/thread",
+      "keyword": "스레드",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "backend/connection-pool",
+      "keyword": "커넥션 풀",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "database/isolation-level",
+      "keyword": "격리 수준",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "database/transaction",
+      "keyword": "트랜잭션",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "os/context-switching",
+      "keyword": "컨텍스트 스위칭",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "os/deadlock",
+      "keyword": "데드락",
+      "count": 1
+    },
+    {
+      "source": "os/thread",
+      "target": "os/process",
+      "keyword": "프로세스",
+      "count": 2
+    },
+    {
+      "source": "os/virtual-memory",
+      "target": "architecture/caching-strategy",
+      "keyword": "캐싱 전략",
+      "count": 1
+    },
+    {
+      "source": "os/virtual-memory",
+      "target": "database/index",
+      "keyword": "인덱스",
+      "count": 1
+    },
+    {
+      "source": "os/virtual-memory",
+      "target": "os/context-switching",
+      "keyword": "컨텍스트 스위칭",
+      "count": 1
+    },
+    {
+      "source": "os/virtual-memory",
+      "target": "os/process",
+      "keyword": "프로세스",
+      "count": 2
+    }
+  ]
+}

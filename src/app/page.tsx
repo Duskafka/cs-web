@@ -1,5 +1,6 @@
 import MindmapShell from '@/components/MindmapShell';
 import { buildKnowledgePayload } from '@/lib/graphUtils';
+import { getLinks } from '@/lib/links';
 import { getAllNotes } from '@/lib/markdown';
 
 /**
@@ -13,7 +14,7 @@ export const dynamic = 'force-static';
 
 export default async function Page() {
   const notes = await getAllNotes();
-  const payload = buildKnowledgePayload(notes);
+  const payload = buildKnowledgePayload(notes, getLinks(notes));
 
   return <MindmapShell payload={payload} />;
 }

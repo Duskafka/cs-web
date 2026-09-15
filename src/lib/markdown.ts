@@ -13,8 +13,6 @@ import rehypeStringify from 'rehype-stringify';
 import { visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 
-import remarkWikiLink from '@/lib/remarkWikiLink';
-import { extractWikiLinks, normalizeKey } from '@/lib/wikilink';
 import { toCategoryId } from '@/lib/brainLobeMap';
 import type { Note, NoteFrontmatter } from '@/types/graph';
 
@@ -46,7 +44,12 @@ function toSlug(filePath: string): string {
     .replace(/\.md$/, '');
 }
 
-/** 검색 인덱스용 평문. 마크다운 기호와 위키링크 대괄호를 걷어낸다. */
+/**
+ * 검색 인덱스와 키워드 스캔에 쓰는 평문.
+ *
+ * `code` 노드는 방문하지 않으므로 코드 블록 안의 단어는 연결 근거가 되지 않는다.
+ * 코드 예제에 우연히 등장한 이름이 간선을 만들면 안 되기 때문이다.
+ */
 function toPlainText(tree: Root): string {
   const parts: string[] = [];
   visit(tree, (node) => {
@@ -54,30 +57,21 @@ function toPlainText(tree: Root): string {
       parts.push((node as { value: string }).value);
     }
   });
-  return parts
-    .join(' ')
-    .replace(/\[\[([^[\]|#]+)(?:#[^[\]|]*)?(?:\|([^[\]]+))?\]\]/g, (_m, target, alias) => alias ?? target)
-    .replace(/\s+/g, ' ')
-    .trim();
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
 }
 
-/**
- * 마크다운 → HTML 프로세서.
- *
- * `resolve` 를 넘기면 위키링크를 앵커로 바꾸고, 넘기지 않으면 일반 마크다운으로만
- * 렌더한다. 회고록처럼 그래프와 무관한 글은 후자를 쓴다.
- */
-function createProcessor(resolve?: (key: string) => string | null) {
-  const processor = unified().use(remarkParse).use(remarkGfm);
-  if (resolve) processor.use(remarkWikiLink, { resolve });
-  return processor
+/** 마크다운 → HTML 프로세서. */
+function createProcessor() {
+  return unified()
+    .use(remarkParse)
+    .use(remarkGfm)
     .use(remarkRehype)
     .use(rehypeSlug)
     .use(rehypeHighlight, { detect: true, ignoreMissing: true })
     .use(rehypeStringify);
 }
 
-/** 위키링크 없는 일반 마크다운을 노트 본문과 같은 규칙으로 렌더한다. */
+/** 노트 본문과 같은 규칙으로 임의의 마크다운을 렌더한다. 회고록이 쓴다. */
 export async function markdownToHtml(body: string): Promise<string> {
   return String(await createProcessor().process(body));
 }
@@ -103,59 +97,6 @@ function toStringArray(value: unknown): string[] {
   return [];
 }
 
-interface RawNote {
-  slug: string;
-  frontmatter: NoteFrontmatter;
-  body: string;
-}
-
-/** 1차 스캔: frontmatter 만 읽어 위키링크 해석 인덱스를 만든다. */
-function readRawNotes(): RawNote[] {
-  return collectMarkdownFiles(CONTENT_ROOT)
-    .map((file) => {
-      const parsed = matter(fs.readFileSync(file, 'utf8'));
-      return {
-        slug: toSlug(file),
-        frontmatter: parsed.data as NoteFrontmatter,
-        body: parsed.content,
-      };
-    })
-    .sort((a, b) => a.slug.localeCompare(b.slug));
-}
-
-/**
- * 위키링크 대상 → slug 해석 인덱스.
- *
- * 우선순위는 제목 > 별칭 > 파일명이다. 제목은 사람이 직접 쓰는 이름이므로
- * 충돌이 나면 제목이 이긴다. 파일명 항목 덕분에 `[[process]]` 처럼 slug 로
- * 적은 링크도 `os/process.md` 를 찾아간다.
- */
-function buildResolveIndex(rawNotes: RawNote[]): Map<string, string> {
-  const index = new Map<string, string>();
-
-  const put = (name: string | undefined, slug: string, overwrite: boolean) => {
-    if (!name) return;
-    const key = normalizeKey(name);
-    if (!key) return;
-    if (!overwrite && index.has(key)) return;
-    index.set(key, slug);
-  };
-
-  // 파일명과 전체 slug 를 먼저 넣고, 별칭·제목 순으로 덮어쓴다.
-  for (const note of rawNotes) {
-    put(note.slug, note.slug, false);
-    put(note.slug.split('/').pop(), note.slug, false);
-  }
-  for (const note of rawNotes) {
-    for (const alias of toStringArray(note.frontmatter.aliases)) put(alias, note.slug, true);
-  }
-  for (const note of rawNotes) {
-    put(note.frontmatter.title ?? note.slug.split('/').pop(), note.slug, true);
-  }
-
-  return index;
-}
-
 let cached: Note[] | null = null;
 
 /**
@@ -167,34 +108,34 @@ let cached: Note[] | null = null;
 export async function getAllNotes(): Promise<Note[]> {
   if (cached) return cached;
 
-  const rawNotes = readRawNotes();
-  const index = buildResolveIndex(rawNotes);
-  const resolve = (key: string) => index.get(key) ?? null;
-
-  const processor = createProcessor(resolve);
+  const processor = createProcessor();
 
   const notes: Note[] = [];
-  for (const raw of rawNotes) {
-    const tree = processor.parse(raw.body) as Root;
-    // 위키링크 플러그인이 text 노드를 앵커로 바꾸기 전에 평문을 먼저 뽑는다.
+  for (const file of collectMarkdownFiles(CONTENT_ROOT).sort()) {
+    const parsed = matter(fs.readFileSync(file, 'utf8'));
+    const frontmatter = parsed.data as NoteFrontmatter;
+    const slug = toSlug(file);
+
+    const tree = processor.parse(parsed.content) as Root;
     const plain = toPlainText(tree);
     const html = processor.stringify(await processor.run(tree));
 
-    const fallbackTitle = raw.slug.split('/').pop() ?? raw.slug;
+    const fallbackTitle = slug.split('/').pop() ?? slug;
     notes.push({
-      slug: raw.slug,
-      title: (raw.frontmatter.title ?? fallbackTitle).trim(),
+      slug,
+      title: (frontmatter.title ?? fallbackTitle).trim(),
       // 카테고리는 frontmatter 를 우선하되, 없으면 디렉터리 이름으로 추론한다.
-      category: toCategoryId(raw.frontmatter.category ?? raw.slug.split('/')[0]),
-      tags: toStringArray(raw.frontmatter.tags),
-      summary: (raw.frontmatter.summary ?? '').trim(),
-      createdAt: toDateString(raw.frontmatter.created_at),
+      category: toCategoryId(frontmatter.category ?? slug.split('/')[0]),
+      tags: toStringArray(frontmatter.tags),
+      aliases: toStringArray(frontmatter.aliases),
+      summary: (frontmatter.summary ?? '').trim(),
+      createdAt: toDateString(frontmatter.created_at),
       html: String(html),
       plain,
-      outgoing: extractWikiLinks(raw.body),
     });
   }
 
+  notes.sort((a, b) => a.slug.localeCompare(b.slug));
   cached = notes;
   return notes;
 }

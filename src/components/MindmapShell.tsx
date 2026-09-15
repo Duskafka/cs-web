@@ -13,7 +13,6 @@ import SettingsPanel from '@/components/ui/SettingsPanel';
 import Sidebar from '@/components/ui/Sidebar';
 import StatsHeader from '@/components/ui/StatsHeader';
 import { useMediaQuery, useMounted } from '@/hooks/useMediaQuery';
-import { ghostId } from '@/lib/wikilink';
 import { computeMatchedIds, useGraphStore } from '@/store/graphStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import type { KnowledgePayload } from '@/types/graph';
@@ -89,27 +88,24 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
   const selectedNode = selectedId ? nodeById.get(selectedId) ?? null : null;
   const hoveredNode = hoveredId ? nodeById.get(hoveredId) ?? null : null;
 
-  const backlinkIds = useCallback(
-    (id: string | null) => (id ? payload.backlinks[id] ?? [] : []),
-    [payload.backlinks],
-  );
-
-  const selectedBacklinks = useMemo(
-    () =>
-      backlinkIds(selectedId)
+  /** 연결 목록에 쓸 노트 정보로 ID 목록을 옮긴다. */
+  const toLinkedNotes = useCallback(
+    (ids: string[]) =>
+      ids
         .map((id) => nodeById.get(id))
         .filter((node) => node !== undefined)
         .map((node) => ({ id: node.id, title: node.title, category: node.category })),
-    [backlinkIds, selectedId, nodeById],
+    [nodeById],
   );
 
-  /** 본문 안의 위키링크 클릭. 고스트 링크는 고스트 노드 ID 로 바꿔 선택한다. */
-  const handleNavigate = useCallback(
-    (slug: string, key: string) => {
-      const id = slug || ghostId(key);
-      if (nodeById.has(id)) selectNode(id);
-    },
-    [nodeById, selectNode],
+  const selectedOutlinks = useMemo(
+    () => toLinkedNotes(selectedId ? payload.outlinks[selectedId] ?? [] : []),
+    [toLinkedNotes, selectedId, payload.outlinks],
+  );
+
+  const selectedBacklinks = useMemo(
+    () => toLinkedNotes(selectedId ? payload.backlinks[selectedId] ?? [] : []),
+    [toLinkedNotes, selectedId, payload.backlinks],
   );
 
   const controls = (
@@ -133,11 +129,11 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
     <NoteReader
       node={selectedNode}
       note={selectedNode?.slug ? noteBySlug.get(selectedNode.slug) : undefined}
+      outlinks={selectedOutlinks}
       backlinks={selectedBacklinks}
       canGoBack={history.length > 1}
       onGoBack={goBack}
       onSelect={(id) => selectNode(id)}
-      onNavigate={handleNavigate}
     />
   );
 
@@ -177,7 +173,9 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
             <NodeTooltip
               node={hoveredNode}
               note={hoveredNode?.slug ? noteBySlug.get(hoveredNode.slug) : undefined}
-              backlinkCount={backlinkIds(hoveredNode?.id ?? null).length}
+              backlinkCount={
+                hoveredNode ? (payload.backlinks[hoveredNode.id] ?? []).length : 0
+              }
             />
           )}
 

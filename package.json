@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "check:graph": "tsx --conditions=react-server scripts/check-graph.mts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "scan:links": "tsx --conditions=react-server scripts/scan-links.mts",
+    "test:scan": "tsx --conditions=react-server scripts/keyword-scan.test.mts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

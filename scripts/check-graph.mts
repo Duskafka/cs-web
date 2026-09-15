@@ -4,10 +4,11 @@
  */
 import { getAllNotes } from '../src/lib/markdown';
 import { buildKnowledgePayload, endpointId } from '../src/lib/graphUtils';
+import { getLinks } from '../src/lib/links';
 import { getRetroEntries } from '../src/lib/retro';
 
 const notes = await getAllNotes();
-const payload = buildKnowledgePayload(notes);
+const payload = buildKnowledgePayload(notes, getLinks(notes));
 const { graph, stats, backlinks } = payload;
 
 console.log('=== 통계 ===');
@@ -18,13 +19,8 @@ for (const [cat, count] of Object.entries(stats.countByCategory)) {
   console.log(`  ${cat}: ${count}`);
 }
 
-console.log('\n=== 고스트 노드 ===');
-for (const node of graph.nodes.filter((n) => n.isGhost)) {
-  console.log(`  ${node.id}  ("${node.title}")  <- ${(backlinks[node.id] ?? []).join(', ')}`);
-}
-
 const orphans = graph.nodes.filter(
-  (n) => !n.isGhost && !graph.links.some((l) => endpointId(l.source) === n.id || endpointId(l.target) === n.id),
+  (n) => !graph.links.some((l) => endpointId(l.source) === n.id || endpointId(l.target) === n.id),
 );
 console.log('\n=== 고아 노드 ===');
 console.log(orphans.length === 0 ? '  없음' : orphans.map((n) => '  ' + n.id).join('\n'));
@@ -44,8 +40,8 @@ console.log('\n=== degree 상위 8 ===');
   .forEach((n) => console.log(`  ${n.val.toString().padStart(2)}  ${n.id}`));
 
 const sample = notes.find((n) => n.slug === 'os/deadlock')!;
-console.log('\n=== HTML 샘플 (os/deadlock, 위키링크 부분) ===');
-console.log(sample.html.split('\n').filter((line) => line.includes('wikilink')).join('\n').slice(0, 600));
+console.log('\n=== 백링크 샘플 (os/deadlock) ===');
+console.log(`  <- ${(backlinks[sample.slug] ?? []).join(', ')}`);
 console.log('\n=== plain 샘플 ===');
 console.log(sample.plain.slice(0, 180));
 

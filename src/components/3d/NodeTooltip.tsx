@@ -46,23 +46,13 @@ export default function NodeTooltip({ node, note, backlinkCount }: NodeTooltipPr
         {lobe.label}
       </div>
 
-      {node.isGhost ? (
-        <p className="mt-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300/90">
-          아직 작성되지 않은 노트입니다. {backlinkCount}개의 노트가 이 주제를 언급하고 있습니다.
-        </p>
-      ) : (
-        <>
-          {note?.summary && (
-            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-fg">
-              {note.summary}
-            </p>
-          )}
-          <div className="mt-2 flex gap-3 text-[11px] text-faint">
-            <span>연결 {node.val}</span>
-            <span>역링크 {backlinkCount}</span>
-          </div>
-        </>
+      {note?.summary && (
+        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-fg">{note.summary}</p>
       )}
+      <div className="mt-2 flex gap-3 text-[11px] text-faint">
+        <span>연결 {node.val}</span>
+        <span>역링크 {backlinkCount}</span>
+      </div>
     </div>
   );
 }

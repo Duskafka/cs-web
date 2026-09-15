@@ -249,30 +249,22 @@ export default function BrainGraphCanvas({
       const radius = 1.8 + Math.sqrt(node.val) * 0.95;
       const group = new THREE.Group();
 
-      const material = node.isGhost
-        ? new THREE.MeshBasicMaterial({
-            // 고스트(스텁) 노드: 아직 파일이 없는 주제. 와이어프레임으로 구분한다.
-            color,
-            wireframe: true,
-            transparent: true,
-            opacity: dimmed ? 0.12 : 0.5,
-          })
-        : new THREE.MeshLambertMaterial({
-            color,
-            emissive: new THREE.Color(color),
-            // 흰 배경에서는 발광을 거의 끈다. 그대로 두면 여섯 색이 전부
-            // 파스텔로 떠올라 서로 구분되지 않는다.
-            emissiveIntensity:
-              theme === 'light'
-                ? node.id === activeId
-                  ? 0.25
-                  : 0
-                : node.id === activeId
-                  ? 0.9
-                  : 0.35,
-            transparent: true,
-            opacity: dimmed ? 0.15 : 1,
-          });
+      const material = new THREE.MeshLambertMaterial({
+        color,
+        emissive: new THREE.Color(color),
+        // 흰 배경에서는 발광을 거의 끈다. 그대로 두면 여섯 색이 전부
+        // 파스텔로 떠올라 서로 구분되지 않는다.
+        emissiveIntensity:
+          theme === 'light'
+            ? node.id === activeId
+              ? 0.25
+              : 0
+            : node.id === activeId
+              ? 0.9
+              : 0.35,
+        transparent: true,
+        opacity: dimmed ? 0.15 : 1,
+      });
 
       group.add(new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 12), material));
 

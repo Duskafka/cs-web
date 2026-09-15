@@ -1,6 +1,6 @@
 'use client';
 
-import { Brain, GitFork, Link2, Sparkles } from 'lucide-react';
+import { Brain, Link2, Sparkles } from 'lucide-react';
 
 import TabNav from '@/components/ui/TabNav';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -49,7 +49,6 @@ export default function StatsHeader({ stats, reducedMode }: StatsHeaderProps) {
       <div className="flex shrink-0 items-center gap-3 text-xs">
         <Stat icon={<Sparkles className="h-3.5 w-3.5" />} label="노트" value={stats.noteCount} />
         <Stat icon={<Link2 className="h-3.5 w-3.5" />} label="연결" value={stats.linkCount} />
-        <Stat icon={<GitFork className="h-3.5 w-3.5" />} label="미작성" value={stats.ghostCount} />
         <ThemeToggle />
       </div>
     </header>

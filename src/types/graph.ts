@@ -11,7 +11,7 @@ export interface NoteFrontmatter {
   summary?: string;
   /** YAML 파서가 Date 로 해석할 수 있어 unknown 으로 받는다. */
   created_at?: unknown;
-  /** 위키링크가 이 노트를 가리킬 때 인정할 추가 이름들. */
+  /** 키워드 스캔이 이 노트의 이름으로 인정할 추가 표기들. */
   aliases?: unknown;
 }
 
@@ -44,16 +44,6 @@ export interface LobeDefinition {
   colorLight: string;
 }
 
-/** 본문에서 추출한 위키링크 한 건. */
-export interface WikiLinkRef {
-  /** `[[대상]]` 의 대상 문자열 원본. */
-  target: string;
-  /** `[[대상|별칭]]` 의 별칭. 없으면 target 과 동일. */
-  alias: string;
-  /** 매칭 인덱스 조회에 쓰는 정규화 키. */
-  key: string;
-}
-
 /** 파싱이 끝난 노트 한 건. */
 export interface Note {
   /** content 디렉터리 기준 확장자 없는 상대 경로. 예: `os/process`. */
@@ -61,14 +51,36 @@ export interface Note {
   title: string;
   category: CategoryId;
   tags: string[];
+  /** 키워드 스캔에서 이 노트의 이름으로 함께 인정할 표기들. */
+  aliases: string[];
   summary: string;
   createdAt: string;
-  /** 미리 렌더된 본문 HTML (위키링크는 `<a data-slug>` 로 치환됨). */
+  /** 미리 렌더된 본문 HTML. */
   html: string;
-  /** 검색 인덱싱용 평문 본문. */
+  /** 검색 인덱싱과 키워드 스캔에 쓰는 평문 본문. */
   plain: string;
-  /** 이 노트가 내보내는 위키링크. */
-  outgoing: WikiLinkRef[];
+}
+
+/** 키워드 스캔에 필요한 최소 노트 정보. */
+export type ScanNote = Pick<Note, 'slug' | 'title' | 'aliases' | 'plain'>;
+
+/** 스캔이 찾아낸 연결 한 건. `source` 본문이 `target` 의 이름을 언급한다. */
+export interface ScannedLink {
+  source: string;
+  target: string;
+  /** 연결의 근거가 된 키워드. 사람이 결과를 검토할 때 쓴다. */
+  keyword: string;
+  /** 본문에 등장한 횟수. */
+  count: number;
+}
+
+/** `content/links.json` 의 형태. `links` 는 생성물, 나머지는 사람이 쓴다. */
+export interface LinksFile {
+  /** 오탐을 막는 [source, target] 쌍 목록. */
+  exclude: [string, string][];
+  /** 스캔이 못 잡는 연결을 손으로 더하는 [source, target] 쌍 목록. */
+  extra: [string, string][];
+  links: ScannedLink[];
 }
 
 /** 그래프 노드. react-force-graph 가 x/y/z/vx/vy/vz 를 런타임에 덧붙인다. */
@@ -76,12 +88,9 @@ export interface GraphNode {
   id: string;
   title: string;
   category: CategoryId;
-  /** 고스트 노드는 대응하는 파일이 없으므로 slug 가 null 이다. */
-  slug: string | null;
+  slug: string;
   /** 연결 수 (degree). 노드 크기 산출에 쓰인다. */
   val: number;
-  /** 매칭되는 마크다운 파일이 없는 스텁 노드 여부. */
-  isGhost: boolean;
   /** 힘 계산이 참조하는 좌우 반구 오프셋 (-1 또는 1). */
   hemisphere: number;
 
@@ -105,8 +114,8 @@ export interface GraphNode {
 export interface GraphLink {
   source: string | GraphNode;
   target: string | GraphNode;
-  relationship: 'wikilink';
-  /** 양방향으로 서로를 참조하는 링크인지 여부. */
+  relationship: 'keyword';
+  /** 양쪽이 서로의 이름을 언급하는 링크인지 여부. */
   bidirectional: boolean;
 }
 
@@ -119,7 +128,6 @@ export interface GraphData {
 export interface GraphStats {
   noteCount: number;
   linkCount: number;
-  ghostCount: number;
   orphanCount: number;
   countByCategory: Record<CategoryId, number>;
 }
@@ -130,5 +138,7 @@ export interface KnowledgePayload {
   notes: Note[];
   /** slug → 이 노트를 가리키는 노트들의 slug 목록. */
   backlinks: Record<string, string[]>;
+  /** slug → 이 노트가 가리키는 노트들의 slug 목록. */
+  outlinks: Record<string, string[]>;
   stats: GraphStats;
 }

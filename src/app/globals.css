@@ -244,33 +244,6 @@ body {
   color: var(--fg);
 }
 
-/* 위키링크: 그래프 이동 트리거임을 색과 점선 밑줄로 드러낸다. */
-.note-content a.wikilink {
-  border-bottom: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
-  color: var(--accent);
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.note-content a.wikilink:hover {
-  border-bottom-color: var(--accent);
-  filter: brightness(1.15);
-}
-
-/* 고스트 링크: 대상 노트가 아직 없다. */
-.note-content a.wikilink-ghost {
-  border-bottom-style: dotted;
-  border-bottom-color: rgb(180 83 9 / 0.5);
-  color: #b45309;
-  filter: none;
-}
-
-.dark .note-content a.wikilink-ghost {
-  border-bottom-color: rgb(251 191 36 / 0.5);
-  color: #fcd34d;
-}
-
 /* ── 코드 하이라이팅 (rehype-highlight / highlight.js 클래스) ───── */
 .hljs-comment,
 .hljs-quote {
