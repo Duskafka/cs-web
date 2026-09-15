@@ -1,6 +1,7 @@
 'use client';
 
-import { getLobe } from '@/lib/brainLobeMap';
+import { getCategoryColor, getLobe } from '@/lib/brainLobeMap';
+import { useSettingsStore } from '@/store/settingsStore';
 import type { GraphNode, Note } from '@/types/graph';
 
 export interface NodeTooltipProps {
@@ -17,39 +18,46 @@ export interface NodeTooltipProps {
  * 커서를 계속 쫓느라 시선이 흔들리므로, 위치는 왼쪽 아래로 고정했다.
  */
 export default function NodeTooltip({ node, note, backlinkCount }: NodeTooltipProps) {
+  // 훅은 이른 반환보다 먼저 불러야 한다.
+  const theme = useSettingsStore((state) => state.theme);
+
   if (!node) return null;
 
   const lobe = getLobe(node.category);
+  const color = getCategoryColor(node.category, theme);
 
   return (
     <div
-      className="pointer-events-none absolute bottom-4 left-4 z-20 max-w-xs rounded-xl border border-white/10 bg-slate-950/85 p-3 shadow-2xl backdrop-blur-md"
-      style={{ borderColor: `${lobe.color}44` }}
+      className="pointer-events-none absolute bottom-4 left-4 z-20 max-w-xs rounded-xl border border-line bg-surface/95 p-3 shadow-2xl backdrop-blur-md"
+      style={{ borderColor: `${color}44` }}
     >
       <div className="flex items-center gap-2">
         <span
           className="h-2.5 w-2.5 shrink-0 rounded-full"
-          style={{ backgroundColor: lobe.color, boxShadow: `0 0 10px ${lobe.color}` }}
+          style={{
+            backgroundColor: color,
+            boxShadow: theme === 'dark' ? `0 0 10px ${color}` : 'none',
+          }}
         />
-        <span className="text-sm font-semibold text-slate-100">{node.title}</span>
+        <span className="text-sm font-semibold text-fg-strong">{node.title}</span>
       </div>
 
-      <div className="mt-1 text-[11px] tracking-wide text-slate-400">
+      <div className="mt-1 text-[11px] tracking-wide text-muted">
         {lobe.label}
       </div>
 
       {node.isGhost ? (
-        <p className="mt-2 text-xs leading-relaxed text-amber-300/90">
+        <p className="mt-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300/90">
           아직 작성되지 않은 노트입니다. {backlinkCount}개의 노트가 이 주제를 언급하고 있습니다.
         </p>
       ) : (
         <>
           {note?.summary && (
-            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-300">
+            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-fg">
               {note.summary}
             </p>
           )}
-          <div className="mt-2 flex gap-3 text-[11px] text-slate-500">
+          <div className="mt-2 flex gap-3 text-[11px] text-faint">
             <span>연결 {node.val}</span>
             <span>역링크 {backlinkCount}</span>
           </div>

@@ -62,13 +62,34 @@ function toPlainText(tree: Root): string {
 }
 
 /**
+ * 마크다운 → HTML 프로세서.
+ *
+ * `resolve` 를 넘기면 위키링크를 앵커로 바꾸고, 넘기지 않으면 일반 마크다운으로만
+ * 렌더한다. 회고록처럼 그래프와 무관한 글은 후자를 쓴다.
+ */
+function createProcessor(resolve?: (key: string) => string | null) {
+  const processor = unified().use(remarkParse).use(remarkGfm);
+  if (resolve) processor.use(remarkWikiLink, { resolve });
+  return processor
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeHighlight, { detect: true, ignoreMissing: true })
+    .use(rehypeStringify);
+}
+
+/** 위키링크 없는 일반 마크다운을 노트 본문과 같은 규칙으로 렌더한다. */
+export async function markdownToHtml(body: string): Promise<string> {
+  return String(await createProcessor().process(body));
+}
+
+/**
  * frontmatter 날짜를 문자열로 고정한다.
  *
  * YAML 파서는 따옴표 없는 `created_at: 2025-01-04` 를 Date 객체로 해석한다.
  * 그 값이 서버 컴포넌트 경계를 넘어 그대로 JSX 로 들어가면 React 가 렌더하지 못하고
  * 터지므로, 여기서 YYYY-MM-DD 문자열로 눌러둔다.
  */
-function toDateString(value: unknown): string {
+export function toDateString(value: unknown): string {
   if (value instanceof Date) return value.toISOString().slice(0, 10);
   if (typeof value === 'string') return value.trim();
   if (typeof value === 'number') return String(value);
@@ -150,14 +171,7 @@ export async function getAllNotes(): Promise<Note[]> {
   const index = buildResolveIndex(rawNotes);
   const resolve = (key: string) => index.get(key) ?? null;
 
-  const processor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkWikiLink, { resolve })
-    .use(remarkRehype)
-    .use(rehypeSlug)
-    .use(rehypeHighlight, { detect: true, ignoreMissing: true })
-    .use(rehypeStringify);
+  const processor = createProcessor(resolve);
 
   const notes: Note[] = [];
   for (const raw of rawNotes) {

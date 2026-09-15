@@ -38,8 +38,10 @@ export interface LobeDefinition {
   label: string;
   /** 노드들이 끌려가는 목표 중심점. */
   centroid: Vec3;
-  /** 네온 색상 (hex). */
+  /** 다크모드용 네온 색상 (hex). */
   color: string;
+  /** 데이모드용 색상 (hex). 네온색은 흰 배경에서 떠 보여 따로 둔다. */
+  colorLight: string;
 }
 
 /** 본문에서 추출한 위키링크 한 건. */

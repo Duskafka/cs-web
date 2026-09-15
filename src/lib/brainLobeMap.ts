@@ -1,4 +1,5 @@
 import type { CategoryId, LobeDefinition, Vec3 } from '@/types/graph';
+import type { Theme } from '@/store/settingsStore';
 
 /**
  * CS 도메인 → 3D 뇌엽 공간 매핑.
@@ -20,36 +21,42 @@ export const LOBES: Record<CategoryId, LobeDefinition> = {
     label: '자료구조·알고리즘',
     centroid: { x: 0, y: 55, z: 120 },
     color: '#22d3ee', // cyan
+    colorLight: '#0e7490',
   },
   architecture: {
     id: 'architecture',
     label: '아키텍처',
     centroid: { x: 0, y: 85, z: -10 },
     color: '#3b82f6', // blue
+    colorLight: '#1d4ed8',
   },
   database: {
     id: 'database',
     label: '데이터베이스',
     centroid: { x: -105, y: -25, z: 10 },
     color: '#e879f9', // magenta
+    colorLight: '#a21caf',
   },
   network: {
     id: 'network',
     label: '네트워크',
     centroid: { x: 105, y: -25, z: 10 },
     color: '#4ade80', // green
+    colorLight: '#047857',
   },
   backend: {
     id: 'backend',
     label: '백엔드',
     centroid: { x: 0, y: 40, z: -140 },
     color: '#a78bfa', // violet
+    colorLight: '#6d28d9',
   },
   os: {
     id: 'os',
     label: '운영체제',
     centroid: { x: 0, y: -80, z: -70 },
     color: '#fbbf24', // amber
+    colorLight: '#b45309',
   },
 };
 
@@ -76,9 +83,46 @@ export function getLobe(category: CategoryId): LobeDefinition {
   return LOBES[category] ?? LOBES[FALLBACK_CATEGORY];
 }
 
-export function getCategoryColor(category: CategoryId): string {
-  return getLobe(category).color;
+export function getCategoryColor(category: CategoryId, theme: Theme): string {
+  const lobe = getLobe(category);
+  return theme === 'light' ? lobe.colorLight : lobe.color;
 }
+
+/**
+ * 캔버스가 쓰는 연결선·라벨 색.
+ *
+ * 노드 색과 달리 이 색들은 Tailwind 클래스를 쓸 수 없다. three.js 와 2D 캔버스에
+ * 문자열로 넘겨야 하므로 여기에 모아 둔다.
+ */
+export interface GraphPalette {
+  /** 평범한 간선. */
+  linkIdle: string;
+  /** 서로를 참조하는 간선. */
+  linkBidirectional: string;
+  /** 선택·호버된 노드에 붙은 간선. */
+  linkHighlight: string;
+  /** 필터에서 밀려난 간선. */
+  linkDim: string;
+  /** 선택·호버된 노드의 라벨. */
+  labelActive: string;
+}
+
+export const GRAPH_PALETTE: Record<Theme, GraphPalette> = {
+  dark: {
+    linkIdle: 'rgba(120, 140, 170, 0.2)',
+    linkBidirectional: 'rgba(148, 197, 255, 0.34)',
+    linkHighlight: 'rgba(125, 211, 252, 0.9)',
+    linkDim: 'rgba(100, 116, 139, 0.06)',
+    labelActive: '#ffffff',
+  },
+  light: {
+    linkIdle: 'rgba(70, 90, 80, 0.22)',
+    linkBidirectional: 'rgba(60, 90, 70, 0.32)',
+    linkHighlight: 'rgba(21, 128, 61, 0.55)',
+    linkDim: 'rgba(70, 90, 80, 0.07)',
+    labelActive: '#0d1712',
+  },
+};
 
 /**
  * 노드 ID 로부터 좌/우 반구를 결정한다.

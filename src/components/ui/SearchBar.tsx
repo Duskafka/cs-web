@@ -19,7 +19,7 @@ export default function SearchBar({ value, onChange, matchCount }: SearchBarProp
        */}
       <div className="relative">
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint"
           aria-hidden
         />
         <input
@@ -28,14 +28,14 @@ export default function SearchBar({ value, onChange, matchCount }: SearchBarProp
           onChange={(event) => onChange(event.target.value)}
           placeholder="제목, 태그, 본문 검색"
           aria-label="노트 검색"
-          className="w-full rounded-lg border border-white/10 bg-slate-900/70 py-2 pl-9 pr-9 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
+          className="w-full rounded-lg border border-line bg-surface py-2 pl-9 pr-9 text-sm text-fg-strong placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-1 focus:ring-accent/40"
         />
         {value && (
           <button
             type="button"
             onClick={() => onChange('')}
             aria-label="검색어 지우기"
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-slate-500 transition hover:bg-white/10 hover:text-slate-200"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-faint transition hover:bg-hover hover:text-fg"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -43,7 +43,7 @@ export default function SearchBar({ value, onChange, matchCount }: SearchBarProp
       </div>
 
       {matchCount !== null && (
-        <p className="mt-1.5 text-[11px] text-slate-500">
+        <p className="mt-1.5 text-[11px] text-faint">
           {matchCount === 0 ? '일치하는 노트가 없습니다' : `${matchCount}개 일치`}
         </p>
       )}

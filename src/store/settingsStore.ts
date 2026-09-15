@@ -6,9 +6,13 @@ export type RenderMode = '3d' | '2d';
 /** 노트를 전체 화면으로 폈을 때 본문이 차지하는 폭. */
 export type ContentWidth = 'reading' | 'full';
 
+/** 화면 테마. 기본값은 데이모드다. */
+export type Theme = 'light' | 'dark';
+
 export interface Settings {
   renderMode: RenderMode;
   contentWidth: ContentWidth;
+  theme: Theme;
 }
 
 interface SettingsState extends Settings {
@@ -23,9 +27,16 @@ interface SettingsState extends Settings {
   hydrate: () => void;
   setRenderMode: (mode: RenderMode) => void;
   setContentWidth: (width: ContentWidth) => void;
+  setTheme: (theme: Theme) => void;
 }
 
-const STORAGE_KEY = 'cs-brain-map:settings';
+/** layout.tsx 의 깜빡임 방지 스크립트도 이 키를 읽는다. 바꾸면 양쪽을 함께 고친다. */
+export const STORAGE_KEY = 'cs-brain-map:settings';
+
+/** 테마는 <html> 의 클래스로 드러난다. CSS 변수는 그 클래스를 보고 갈린다. */
+function applyTheme(theme: Theme) {
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+}
 
 /** 좁은 화면에서는 WebGL 이 GPU 와 배터리에 부담이 크므로 2D 로 시작한다. */
 function defaultRenderMode(): RenderMode {
@@ -43,9 +54,12 @@ function readStored(): Partial<Settings> {
   }
 }
 
-function writeStored(settings: Settings) {
+function persist({ renderMode, contentWidth, theme }: Settings) {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ renderMode, contentWidth, theme }),
+    );
   } catch {
     // 저장에 실패해도 이번 세션 동작에는 영향이 없다.
   }
@@ -54,6 +68,7 @@ function writeStored(settings: Settings) {
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   renderMode: '3d',
   contentWidth: 'reading',
+  theme: 'light',
   hydrated: false,
 
   hydrate: () => {
@@ -62,17 +77,24 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set({
       renderMode: stored.renderMode ?? defaultRenderMode(),
       contentWidth: stored.contentWidth ?? 'reading',
+      theme: stored.theme ?? 'light',
       hydrated: true,
     });
   },
 
   setRenderMode: (renderMode) => {
     set({ renderMode });
-    writeStored({ renderMode, contentWidth: get().contentWidth });
+    persist(get());
   },
 
   setContentWidth: (contentWidth) => {
     set({ contentWidth });
-    writeStored({ renderMode: get().renderMode, contentWidth });
+    persist(get());
+  },
+
+  setTheme: (theme) => {
+    set({ theme });
+    applyTheme(theme);
+    persist(get());
   },
 }));

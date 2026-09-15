@@ -17,9 +17,10 @@ import {
   lobeAttractionForce,
   midlineGapForce,
 } from '@/components/3d/forces';
-import { getCategoryColor, targetPosition } from '@/lib/brainLobeMap';
+import { GRAPH_PALETTE, getCategoryColor, targetPosition } from '@/lib/brainLobeMap';
 import { endpointId } from '@/lib/graphUtils';
 import { useElementSize } from '@/hooks/useMediaQuery';
+import type { Theme } from '@/store/settingsStore';
 import type { GraphData, GraphLink, GraphNode } from '@/types/graph';
 
 /**
@@ -42,7 +43,7 @@ const ForceGraph3D = dynamic(() => import('react-force-graph-3d'), {
 
 function CanvasFallback() {
   return (
-    <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">
+    <div className="flex h-full w-full items-center justify-center text-sm text-faint">
       3D 뇌 지도를 불러오는 중...
     </div>
   );
@@ -63,6 +64,8 @@ export interface BrainGraphCanvasProps {
   matchedIds: Set<string> | null;
   adjacency: Map<string, Set<string>>;
   focusToken: number;
+  /** 노드·연결선 색을 고르는 화면 테마. */
+  theme: Theme;
   onSelect: (id: string | null) => void;
   onHover: (id: string | null) => void;
 }
@@ -74,6 +77,7 @@ export default function BrainGraphCanvas({
   matchedIds,
   adjacency,
   focusToken,
+  theme,
   onSelect,
   onHover,
 }: BrainGraphCanvasProps) {
@@ -84,6 +88,7 @@ export default function BrainGraphCanvas({
   const { width, height } = useElementSize(containerRef);
 
   const lightMode = graph.nodes.length > LOD_NODE_THRESHOLD;
+  const palette = GRAPH_PALETTE[theme];
 
   /**
    * force-graph 는 전달받은 노드 객체를 직접 변형하므로(x/y/z/vx 주입)
@@ -133,6 +138,14 @@ export default function BrainGraphCanvas({
   useEffect(() => {
     wake();
   }, [activeId, matchedIds, wake]);
+
+  // 테마가 바뀌면 조명 색도 따라가야 한다. 같은 이름의 그룹을 갈아 끼우므로
+  // 여러 번 불려도 조명이 쌓이지 않는다. 멈춰 있던 렌더 루프도 함께 깨운다.
+  useEffect(() => {
+    const scene = graphRef.current?.scene();
+    if (scene) attachSceneLights(scene, theme);
+    wake();
+  }, [theme, wake]);
 
   // ---- 클릭(탭) 판정 ----
   /**
@@ -195,11 +208,11 @@ export default function BrainGraphCanvas({
     fg.d3Force('shell', ellipsoidConstraintForce(0.35));
     fg.d3Force('midline', midlineGapForce(18, 0.12));
 
-    attachSceneLights(fg.scene());
+    attachSceneLights(fg.scene(), theme);
     // 노드를 작게 그리므로 초기 카메라를 조금 당겨 제목이 읽히는 거리에서 시작한다.
     fg.cameraPosition({ x: 0, y: 80, z: 470 });
     fg.d3ReheatSimulation();
-  }, []);
+  }, [theme]);
 
   // ---- 카메라 포커스 ----
   useEffect(() => {
@@ -227,7 +240,7 @@ export default function BrainGraphCanvas({
   // ---- 노드 렌더링 ----
   const nodeThreeObject = useCallback(
     (node: GraphNode) => {
-      const color = getCategoryColor(node.category);
+      const color = getCategoryColor(node.category, theme);
       const matched = isMatched(node);
       const highlighted = neighborIds ? neighborIds.has(node.id) : true;
       const dimmed = !matched || !highlighted;
@@ -247,7 +260,16 @@ export default function BrainGraphCanvas({
         : new THREE.MeshLambertMaterial({
             color,
             emissive: new THREE.Color(color),
-            emissiveIntensity: node.id === activeId ? 0.9 : 0.35,
+            // 흰 배경에서는 발광을 거의 끈다. 그대로 두면 여섯 색이 전부
+            // 파스텔로 떠올라 서로 구분되지 않는다.
+            emissiveIntensity:
+              theme === 'light'
+                ? node.id === activeId
+                  ? 0.25
+                  : 0
+                : node.id === activeId
+                  ? 0.9
+                  : 0.35,
             transparent: true,
             opacity: dimmed ? 0.15 : 1,
           });
@@ -261,7 +283,7 @@ export default function BrainGraphCanvas({
 
       if (showLabel) {
         const label = new SpriteText(node.title);
-        label.color = node.id === activeId ? '#ffffff' : color;
+        label.color = node.id === activeId ? palette.labelActive : color;
         label.textHeight = node.id === activeId ? 7 : 5;
         label.fontWeight = node.id === activeId ? '700' : '500';
         label.position.set(0, radius + 4.5, 0);
@@ -271,7 +293,7 @@ export default function BrainGraphCanvas({
 
       return group;
     },
-    [activeId, isMatched, lightMode, neighborIds],
+    [activeId, isMatched, lightMode, neighborIds, palette, theme],
   );
 
   const linkColor = useCallback(
@@ -280,15 +302,15 @@ export default function BrainGraphCanvas({
       const b = endpointId(link.target);
       if (neighborIds) {
         return neighborIds.has(a) && neighborIds.has(b)
-          ? 'rgba(125, 211, 252, 0.9)'
-          : 'rgba(100, 116, 139, 0.07)';
+          ? palette.linkHighlight
+          : palette.linkDim;
       }
       if (matchedIds && !(matchedIds.has(a) && matchedIds.has(b))) {
-        return 'rgba(100, 116, 139, 0.05)';
+        return palette.linkDim;
       }
-      return link.bidirectional ? 'rgba(148, 197, 255, 0.34)' : 'rgba(120, 140, 170, 0.2)';
+      return link.bidirectional ? palette.linkBidirectional : palette.linkIdle;
     },
-    [matchedIds, neighborIds],
+    [matchedIds, neighborIds, palette],
   );
 
   const linkWidth = useCallback(

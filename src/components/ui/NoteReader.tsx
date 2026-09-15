@@ -4,7 +4,8 @@ import { useLayoutEffect, useRef } from 'react';
 import { ArrowLeft, CornerDownRight, FileQuestion } from 'lucide-react';
 
 import NoteContent from '@/components/markdown/NoteContent';
-import { getLobe } from '@/lib/brainLobeMap';
+import { getCategoryColor, getLobe } from '@/lib/brainLobeMap';
+import { useSettingsStore } from '@/store/settingsStore';
 import type { GraphNode, Note } from '@/types/graph';
 
 export interface NoteReaderProps {
@@ -29,6 +30,7 @@ export default function NoteReader({
   onNavigate,
 }: NoteReaderProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const theme = useSettingsStore((state) => state.theme);
 
   // 다른 노트로 옮겨가면 본문을 맨 위부터 보여준다.
   // 스크롤 위치를 그대로 두면 새 노트의 중간이 열려 맥락을 잃는다.
@@ -40,16 +42,17 @@ export default function NoteReader({
   if (!node) return null;
 
   const lobe = getLobe(node.category);
+  const color = getCategoryColor(node.category, theme);
 
   return (
     <article className="flex min-h-0 flex-auto flex-col">
-      <div className="shrink-0 border-b border-white/10">
+      <div className="shrink-0 border-b border-line">
         <div className="note-column px-4 pb-3">
           {canGoBack && (
             <button
               type="button"
               onClick={onGoBack}
-              className="mb-2 flex items-center gap-1 text-[11px] text-slate-500 transition hover:text-slate-300"
+              className="mb-2 flex items-center gap-1 text-[11px] text-faint transition hover:text-fg"
             >
               <ArrowLeft className="h-3 w-3" /> 이전 노트
             </button>
@@ -59,31 +62,31 @@ export default function NoteReader({
             <span
               className="h-2.5 w-2.5 shrink-0 rounded-full"
               style={{
-                backgroundColor: lobe.color,
-                boxShadow: `0 0 10px ${lobe.color}`,
+                backgroundColor: color,
+                boxShadow: theme === 'dark' ? `0 0 10px ${color}` : 'none',
               }}
             />
-            <span className="text-[11px] tracking-wide text-slate-400">{lobe.label}</span>
+            <span className="text-[11px] tracking-wide text-muted">{lobe.label}</span>
           </div>
 
-          <h2 className="mt-1 text-lg font-semibold leading-snug text-slate-50">{node.title}</h2>
+          <h2 className="mt-1 text-lg font-semibold leading-snug text-fg-strong">{node.title}</h2>
 
           {note && (
             <>
               {note.summary && (
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{note.summary}</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted">{note.summary}</p>
               )}
               <div className="mt-2 flex flex-wrap items-center gap-1.5">
                 {note.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] text-slate-400"
+                    className="rounded border border-line bg-hover px-1.5 py-0.5 text-[10px] text-muted"
                   >
                     #{tag}
                   </span>
                 ))}
                 {note.createdAt && (
-                  <span className="ml-auto text-[10px] tabular-nums text-slate-600">
+                  <span className="ml-auto text-[10px] tabular-nums text-faint">
                     {note.createdAt}
                   </span>
                 )}
@@ -99,43 +102,43 @@ export default function NoteReader({
           {note ? (
             <NoteContent html={note.html} onNavigate={onNavigate} />
           ) : (
-            <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 p-3">
-              <div className="flex items-center gap-2 text-amber-300">
+            <div className="rounded-lg border border-amber-600/25 bg-amber-500/10 dark:border-amber-400/20 dark:bg-amber-400/5 p-3">
+              <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
                 <FileQuestion className="h-4 w-4" aria-hidden />
                 <span className="text-sm font-medium">아직 작성되지 않은 노트</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              <p className="mt-2 text-xs leading-relaxed text-muted">
                 다른 노트가 이 주제를 위키링크로 언급했지만 대응하는 마크다운 파일이 없습니다.
-                <code className="mx-1 rounded bg-white/10 px-1 py-0.5 text-[11px] text-slate-300">
+                <code className="mx-1 rounded bg-selected px-1 py-0.5 text-[11px] text-fg">
                   content/
                 </code>
-                아래에 <strong className="text-slate-200">{node.title}</strong> 노트를 추가하면 이
+                아래에 <strong className="text-fg">{node.title}</strong> 노트를 추가하면 이
                 자리가 채워집니다.
               </p>
             </div>
           )}
 
           {backlinks.length > 0 && (
-            <section className="mt-8 border-t border-white/10 pt-4">
-              <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+            <section className="mt-8 border-t border-line pt-4">
+              <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-faint">
                 이 노트를 언급한 노트 ({backlinks.length})
               </h3>
               <ul className="space-y-1">
                 {backlinks.map((item) => {
-                  const itemLobe = getLobe(item.category);
+                  const itemColor = getCategoryColor(item.category, theme);
                   return (
                     <li key={item.id}>
                       <button
                         type="button"
                         onClick={() => onSelect(item.id)}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition hover:bg-white/5"
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition hover:bg-hover"
                       >
-                        <CornerDownRight className="h-3 w-3 shrink-0 text-slate-600" aria-hidden />
+                        <CornerDownRight className="h-3 w-3 shrink-0 text-faint" aria-hidden />
                         <span
                           className="h-1.5 w-1.5 shrink-0 rounded-full"
-                          style={{ backgroundColor: itemLobe.color }}
+                          style={{ backgroundColor: itemColor }}
                         />
-                        <span className="truncate text-[13px] text-slate-300">{item.title}</span>
+                        <span className="truncate text-[13px] text-fg">{item.title}</span>
                       </button>
                     </li>
                   );

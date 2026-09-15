@@ -4,6 +4,7 @@
  */
 import { getAllNotes } from '../src/lib/markdown';
 import { buildKnowledgePayload, endpointId } from '../src/lib/graphUtils';
+import { getRetroEntries } from '../src/lib/retro';
 
 const notes = await getAllNotes();
 const payload = buildKnowledgePayload(notes);
@@ -47,3 +48,16 @@ console.log('\n=== HTML 샘플 (os/deadlock, 위키링크 부분) ===');
 console.log(sample.html.split('\n').filter((line) => line.includes('wikilink')).join('\n').slice(0, 600));
 console.log('\n=== plain 샘플 ===');
 console.log(sample.plain.slice(0, 180));
+
+console.log('\n=== 회고록 ===');
+const retro = await getRetroEntries();
+console.log(`  ${retro.length}편 (오래된 순)`);
+for (const entry of retro) {
+  console.log(`  ${entry.date || '(날짜 없음)'}  ${entry.slug}  "${entry.title}"`);
+}
+const badRetro = retro.filter((entry) => !entry.date || !entry.html.trim());
+console.log(
+  badRetro.length === 0
+    ? '  경고 없음'
+    : badRetro.map((entry) => `  ! ${entry.slug}: 날짜나 본문이 비었다`).join('\n'),
+);

@@ -109,4 +109,4 @@ npm run build
 1. **Strict Type Safety**: Every graph node, link, and frontmatter must adhere to TypeScript interfaces defined in `@/types/graph.ts`.
 2. **Component Separation**: Keep Three.js rendering logic (`BrainGraphCanvas.tsx`) strictly separated from UI state drawers (`NoteReader.tsx`).
 3. **Wikilink Validation**: Unmatched `[[wikilinks]]` should automatically create a "ghost/stub node" rendered with lower opacity.
-4. **Authentic Design & Styling**: Dark mode default with neon cybernetic or anatomical color coding for each CS domain.
+4. **Authentic Design & Styling**: Day mode is the default theme (near-white `#f4f8f4` base with a deep green accent); dark mode is a toggle. Colors live only as semantic tokens in `globals.css` — never hardcode a palette class in a component. Each CS domain keeps its own color, with a light and a dark variant in `brainLobeMap.ts`.

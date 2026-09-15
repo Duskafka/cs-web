@@ -13,11 +13,11 @@ interface ChoiceProps<T extends string> {
 function Choice<T extends string>({ label, value, options, onChange }: ChoiceProps<T>) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="truncate text-[13px] text-slate-300">{label}</span>
+      <span className="truncate text-[13px] text-fg">{label}</span>
       <div
         role="radiogroup"
         aria-label={label}
-        className="flex shrink-0 rounded-lg border border-white/10 p-0.5"
+        className="flex shrink-0 rounded-lg border border-line p-0.5"
       >
         {options.map((option) => {
           const active = option.value === value;
@@ -29,7 +29,7 @@ function Choice<T extends string>({ label, value, options, onChange }: ChoicePro
               aria-checked={active}
               onClick={() => onChange(option.value)}
               className={`rounded-md px-2 py-0.5 text-[11px] transition ${
-                active ? 'bg-white/10 text-slate-100' : 'text-slate-500 hover:text-slate-300'
+                active ? 'bg-selected text-fg-strong' : 'text-faint hover:text-fg'
               }`}
             >
               {option.label}
@@ -54,7 +54,7 @@ export default function SettingsPanel() {
 
   return (
     <section>
-      <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+      <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-faint">
         설정
       </h2>
 

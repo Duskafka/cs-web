@@ -39,6 +39,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
   const settingsHydrated = useSettingsStore((state) => state.hydrated);
   const renderMode = useSettingsStore((state) => state.renderMode);
   const contentWidth = useSettingsStore((state) => state.contentWidth);
+  const theme = useSettingsStore((state) => state.theme);
   const hydrateSettings = useSettingsStore((state) => state.hydrate);
   useEffect(() => {
     hydrateSettings();
@@ -141,7 +142,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
   );
 
   return (
-    <div className="flex h-dvh flex-col bg-slate-950">
+    <div className="flex h-dvh flex-col bg-canvas">
       <StatsHeader stats={payload.stats} reducedMode={canRender && renderMode === '2d'} />
 
       <div className="relative flex min-h-0 flex-1">
@@ -155,6 +156,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
                 matchedIds={matchedIds}
                 adjacency={adjacency}
                 focusToken={focusToken}
+                theme={theme}
                 onSelect={(id) => selectNode(id)}
               />
             ) : (
@@ -165,6 +167,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
                 matchedIds={matchedIds}
                 adjacency={adjacency}
                 focusToken={focusToken}
+                theme={theme}
                 onSelect={(id) => selectNode(id)}
                 onHover={setHovered}
               />
@@ -183,7 +186,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
               type="button"
               onClick={() => setSidebarOpen(true)}
               aria-label="사이드바 펼치기"
-              className="absolute right-4 top-4 z-20 rounded-lg border border-white/10 bg-slate-900/80 p-2 text-slate-300 backdrop-blur transition hover:bg-slate-800"
+              className="absolute right-4 top-4 z-20 rounded-lg border border-line bg-surface/80 p-2 text-fg backdrop-blur transition hover:bg-hover"
             >
               <PanelRightOpen className="h-4 w-4" />
             </button>
@@ -199,7 +202,7 @@ export default function MindmapShell({ payload }: MindmapShellProps) {
       {/* 모바일: 검색과 필터는 하단에 고정한다. */}
       {mounted && isMobile && (
         /* 좁은 화면에서는 필터 목록이 그래프를 밀어내므로 높이를 제한하고 스크롤시킨다. */
-        <div className="max-h-[38vh] shrink-0 overflow-y-auto border-t border-white/10 bg-slate-950/90 px-3 py-2.5 backdrop-blur">
+        <div className="max-h-[38vh] shrink-0 overflow-y-auto border-t border-line bg-surface/90 px-3 py-2.5 backdrop-blur">
           {controls}
         </div>
       )}

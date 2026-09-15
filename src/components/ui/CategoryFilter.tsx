@@ -1,6 +1,7 @@
 'use client';
 
-import { CATEGORY_ORDER, LOBES } from '@/lib/brainLobeMap';
+import { CATEGORY_ORDER, LOBES, getCategoryColor } from '@/lib/brainLobeMap';
+import { useSettingsStore } from '@/store/settingsStore';
 import type { CategoryId } from '@/types/graph';
 
 export interface CategoryFilterProps {
@@ -23,18 +24,19 @@ export default function CategoryFilter({
   onReset,
 }: CategoryFilterProps) {
   const allOn = activeCategories.size === CATEGORY_ORDER.length;
+  const theme = useSettingsStore((state) => state.theme);
 
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-faint">
           카테고리
         </h2>
         {!allOn && (
           <button
             type="button"
             onClick={onReset}
-            className="text-[11px] text-cyan-400 transition hover:text-cyan-300"
+            className="text-[11px] text-accent transition hover:opacity-80"
           >
             전체 보기
           </button>
@@ -44,6 +46,7 @@ export default function CategoryFilter({
       <ul className="space-y-1">
         {CATEGORY_ORDER.map((id) => {
           const lobe = LOBES[id];
+          const color = getCategoryColor(id, theme);
           const active = activeCategories.has(id);
           return (
             <li key={id}>
@@ -52,20 +55,21 @@ export default function CategoryFilter({
                 onClick={() => onToggle(id)}
                 aria-pressed={active}
                 className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition ${
-                  active ? 'bg-white/5 hover:bg-white/10' : 'opacity-40 hover:opacity-70'
+                  active ? 'bg-hover hover:bg-hover' : 'opacity-40 hover:opacity-70'
                 }`}
               >
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-full transition"
                   style={{
-                    backgroundColor: lobe.color,
-                    boxShadow: active ? `0 0 8px ${lobe.color}` : 'none',
+                    backgroundColor: color,
+                    // 후광은 어두운 바탕에서만 의미가 있다. 흰 바탕에서는 번져 보인다.
+                    boxShadow: active && theme === 'dark' ? `0 0 8px ${color}` : 'none',
                   }}
                 />
-                <span className="min-w-0 flex-1 truncate text-[13px] text-slate-200">
+                <span className="min-w-0 flex-1 truncate text-[13px] text-fg">
                   {lobe.label}
                 </span>
-                <span className="shrink-0 text-[11px] tabular-nums text-slate-500">
+                <span className="shrink-0 text-[11px] tabular-nums text-faint">
                   {countByCategory[id] ?? 0}
                 </span>
               </button>

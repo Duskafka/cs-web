@@ -20,18 +20,18 @@ export default function Sidebar({ open, onClose, controls }: SidebarProps) {
   return (
     <aside
       aria-hidden={!open}
-      className={`flex h-full shrink-0 flex-col border-l border-white/10 bg-slate-950/70 backdrop-blur transition-[width] duration-300 ease-out ${
+      className={`flex h-full shrink-0 flex-col border-l border-line bg-surface/80 backdrop-blur transition-[width] duration-300 ease-out ${
         open ? 'w-[22rem] xl:w-[26rem]' : 'w-0 overflow-hidden border-l-0'
       }`}
     >
-      <div className="flex w-[22rem] shrink-0 flex-col gap-3 border-b border-white/10 p-4 xl:w-[26rem]">
+      <div className="flex w-[22rem] shrink-0 flex-col gap-3 border-b border-line p-4 xl:w-[26rem]">
         <div className="flex items-start gap-2">
           <div className="min-w-0 flex-1">{controls}</div>
           <button
             type="button"
             onClick={onClose}
             aria-label="사이드바 접기"
-            className="mt-0.5 shrink-0 rounded p-1.5 text-slate-500 transition hover:bg-white/10 hover:text-slate-200"
+            className="mt-0.5 shrink-0 rounded p-1.5 text-faint transition hover:bg-hover hover:text-fg"
           >
             <PanelRightClose className="h-4 w-4" />
           </button>

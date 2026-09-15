@@ -64,7 +64,7 @@ export default function NoteFullView({
       aria-modal="true"
       aria-label="노트 상세"
       tabIndex={-1}
-      className={`fixed inset-0 z-40 flex flex-col bg-slate-950 outline-none transition-opacity duration-200 ${
+      className={`fixed inset-0 z-40 flex flex-col bg-canvas outline-none transition-opacity duration-200 ${
         entered ? 'opacity-100' : 'opacity-0'
       } ${contentWidth === 'full' ? 'note-full' : ''}`}
     >
@@ -73,7 +73,7 @@ export default function NoteFullView({
           type="button"
           onClick={onClose}
           aria-label="닫기"
-          className="rounded p-1.5 text-slate-500 transition hover:bg-white/10 hover:text-slate-200"
+          className="rounded p-1.5 text-faint transition hover:bg-hover hover:text-fg"
         >
           <X className="h-4 w-4" />
         </button>

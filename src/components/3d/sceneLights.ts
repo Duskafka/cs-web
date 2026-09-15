@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import type { Theme } from '@/store/settingsStore';
+
 /**
  * 3D 씬 조명.
  *
@@ -15,7 +17,7 @@ import * as THREE from 'three';
 const LIGHT_GROUP_NAME = 'brain-lights';
 
 /** 씬에 조명을 추가하고, 정리 함수를 돌려준다. */
-export function attachSceneLights(scene: THREE.Scene): () => void {
+export function attachSceneLights(scene: THREE.Scene, theme: Theme): () => void {
   // 개발 중 HMR 로 두 번 붙는 것을 막는다.
   scene.getObjectByName(LIGHT_GROUP_NAME)?.removeFromParent();
 
@@ -23,7 +25,8 @@ export function attachSceneLights(scene: THREE.Scene): () => void {
   lights.name = LIGHT_GROUP_NAME;
 
   const ambient = new THREE.AmbientLight(0xffffff, 1.1);
-  const key = new THREE.DirectionalLight(0xbfe9ff, 0.9);
+  // 흰 배경에서는 푸른 기가 도는 키 라이트가 화면 전체에 냉기를 남긴다.
+  const key = new THREE.DirectionalLight(theme === 'light' ? 0xffffff : 0xbfe9ff, 0.9);
   key.position.set(120, 220, 260);
   lights.add(ambient, key);
 
